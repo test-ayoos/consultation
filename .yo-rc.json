@@ -1,0 +1,40 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.bytatech.ayoos",
+      "nativeLanguage": "en"
+    },
+    "jhipsterVersion": "5.8.2",
+    "applicationType": "microservice",
+    "baseName": "consultation",
+    "packageName": "com.bytatech.ayoos",
+    "packageFolder": "com/bytatech/ayoos",
+    "serverPort": "8001",
+    "authenticationType": "oauth2",
+    "cacheProvider": "hazelcast",
+    "enableHibernateCache": true,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "mysql",
+    "prodDatabaseType": "mysql",
+    "searchEngine": "elasticsearch",
+    "messageBroker": false,
+    "serviceDiscoveryType": "eureka",
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "N2QxOTZjNWM3OTg3YzBjM2QzZGMzNDgyOWZiMDNlNGI5NzUwYjk5MjhkZGRmYTljMjI3NDMyMDNkZjJiMzBiNjQ2YTc1ZDQxZTExZjhkODllMTg0NDE3ZmI1ZjYwZmUxZmVkYzE4YTZiOWZhNDc2ODczMTBiMGE4M2ViYjZjZTU=",
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": true,
+    "clientPackageManager": "npm",
+    "nativeLanguage": "en",
+    "languages": [
+      "en"
+    ],
+    "skipClient": true,
+    "skipUserManagement": true
+  }
+}
