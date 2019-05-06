@@ -10,10 +10,50 @@
 
     <repositories>
         <!-- jhipster-needle-maven-repository -->
+        
+         <repository>
+		    <id>alfresco-public</id>
+			<url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
+		</repository>
+		<repository>
+			<id>alfresco-thirdparty</id>
+			<url>https://artifacts.alfresco.com/nexus/content/repositories/thirdparty</url>
+		</repository>
+		<repository>
+			<id>alfresco-public-snapshots</id>
+			<url>https://artifacts.alfresco.com/nexus/content/repositories/public-snapshots</url>
+		</repository>
+		<repository>
+			<id>central</id>
+			<url>http://repo1.maven.org/maven2</url>
+		</repository> 
+        
     </repositories>
 
     <pluginRepositories>
         <!-- jhipster-needle-maven-plugin-repository -->
+        
+        <!-- <pluginRepository>
+			<id>alfresco-private</id>
+			<url>https://artifacts.alfresco.com/nexus/content/groups/private</url>
+		</pluginRepository> -->
+		<!-- <pluginRepository>
+		    <id>alfresco-public</id>
+			<url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>alfresco-thirdparty</id>
+			<url>https://artifacts.alfresco.com/nexus/content/repositories/thirdparty</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>alfresco-public-snapshots</id>
+			<url>https://artifacts.alfresco.com/nexus/content/repositories/public-snapshots</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>central</id>
+			<url>http://repo1.maven.org/maven2</url>
+		</pluginRepository> -->
+        
     </pluginRepositories>
 
     <!-- jhipster-needle-distribution-management -->
@@ -110,6 +150,81 @@
     </dependencyManagement>
 
     <dependencies>
+    	
+    	<!-- ALFRESCO DEPENDENCY -->
+    	
+    	 <!-- <dependency>
+			<groupId>org.alfresco</groupId>
+			<artifactId>alfresco-core</artifactId>
+			<version>5.2.d</version>
+			<scope>provided</scope>
+		</dependency> 
+		
+ 		<dependency>
+			<groupId>org.alfresco</groupId>
+			<artifactId>alfresco-data-model</artifactId>
+			<version>5.2.d</version>
+			<scope>provided</scope>
+		</dependency>  -->
+    	
+    	<dependency>
+			<groupId>org.alfresco</groupId>
+			<artifactId>alfresco-repository</artifactId>
+			<version>5.2.d</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.lucene</groupId>
+					<artifactId>lucene-core</artifactId>
+				</exclusion>
+			</exclusions>
+    	</dependency> 
+    	
+    	
+    	
+    	<!-- Spring hateoas -->
+    	
+    	<dependency>
+				<groupId>org.springframework.hateoas</groupId>
+				<artifactId>spring-hateoas</artifactId>
+			</dependency>
+    
+    	<!-- Jasper -->
+
+	<dependency>
+		<groupId>net.sf.jasperreports</groupId>
+		<artifactId>jasperreports</artifactId>
+		<version>6.1.0</version>
+		<exclusions>
+			<exclusion>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-core</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-queryparser</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-analyzers-common</artifactId>
+			</exclusion>
+		</exclusions>
+	</dependency>
+    
+    
+    
         <dependency>
             <groupId>io.github.jhipster</groupId>
             <artifactId>jhipster-framework</artifactId>
@@ -249,6 +364,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+            <exclusions>
+            	<exclusion>
+            		<groupId>org.apache.logging.log4j</groupId>
+            		<artifactId>log4j-api</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <!-- Spring Data Jest dependencies for Elasticsearch -->
         <dependency>
@@ -259,23 +380,43 @@
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
+                <exclusion>
+                	<groupId>org.apache.logging.log4j</groupId>
+                	<artifactId>log4j-api</artifactId>
+                </exclusion>
+                <!-- <exclusion>
+                	<groupId>org.apache.lucene</groupId>
+                	<artifactId>lucene-core</artifactId>
+                </exclusion> -->
+                <!-- <exclusion>
+                	<groupId>org.apache.lucene</groupId>
+                	<artifactId>lucene-core</artifactId>
+                </exclusion>
+                <exclusion>
+                	<groupId>org.apache.lucene</groupId>
+                	<artifactId>lucene-queryparser</artifactId>
+                </exclusion>
+                <exclusion>
+                	<groupId>org.apache.lucene</groupId>
+                	<artifactId>lucene-analyzers-common</artifactId>
+                </exclusion> -->
             </exclusions>
         </dependency>
         <!-- log4j needed to create embedded elasticsearch instance -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.7</version>
-        </dependency>
         <!-- end of Spring Data Jest dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-logging</artifactId>
+            <exclusions>
+            	<exclusion>
+            		<groupId>org.apache.logging.log4j</groupId>
+            		<artifactId>log4j-api</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>org.apache.logging.log4j</groupId>
+            		<artifactId>log4j-to-slf4j</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -374,7 +515,11 @@
             <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-core</artifactId>
         </dependency>
-        <!-- jhipster-needle-maven-add-dependency -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
+        </dependency>
+        
     </dependencies>
 
     <build>

@@ -3,7 +3,9 @@ package com.bytatech.ayoos.security;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -12,6 +14,12 @@ import java.util.Optional;
 public final class SecurityUtils {
 
     private SecurityUtils() {
+    }
+    
+    public static Optional<String> getPhoneNumberFromAuthentication() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Map<String, String> map=(Map<String, String>)((OAuth2Authentication)securityContext.getAuthentication()).getUserAuthentication().getDetails();
+        return Optional.ofNullable((String) map.get("phone"));
     }
 
     /**
