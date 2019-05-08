@@ -403,6 +403,8 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
    		drugFormProperty.setWritable(true);
    		drugFormProperty.setValue(prescriptionRequest.getDrug());
    		formProperties.add(drugFormProperty);
+   		System.out.println("================================"+drugFormProperty.getValue()+"====================================");
+   		
    	
    		RestFormProperty doseFormProperty = new RestFormProperty();
    		doseFormProperty.setId("dose");
@@ -432,15 +434,18 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
    		formProperties.add(periodFormProperty);
    		
    		System.out.println("/////////////////////////"+periodFormProperty.getValue()+"////////////////////////////////////////");
-   		System.out.println("***********************"+prescriptionRequest.toString()+"*****************");
+   		//System.out.println("***********************"+prescriptionRequest.toString()+"*****************");
 		
-		/*
-		 * try { createPrescriptionReport(formProperties); } catch (JRException e) {
-		 * e.printStackTrace();
-		 * 
-		 * }
-		 */
-   	
+		
+		try {
+			createPrescriptionReport(prescriptionRequest);
+		} catch (JRException e) {
+			e.printStackTrace();
+
+		}
+		 
+   		//saveToRepo(formProperties);
+   		
    		submitFormRequest.setProperties(formProperties);
    		formsApi.submitForm(submitFormRequest);
 		
@@ -573,30 +578,40 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
 		
 	//@Override
 	
-	  public void createPrescriptionReport(List<RestFormProperty> formProperties)
+	  public void createPrescriptionReport(PrescriptionRequest prescriptionRequest)
 	  throws JRException {
 	  
 	  log.info("REST request to create pdf**********");
 	  
 	  
-	  List<RestFormProperty> list = new ArrayList<RestFormProperty>();
+	  List<PrescriptionRequest> list = new ArrayList<PrescriptionRequest>();
 	  
-	  list=formProperties;
-	  log.info("*****"+formProperties.toString()+"***********");
-		/*
-		 * JasperReport jr = JasperCompileManager.compileReport("Blank.jrxml");
-		 * 
-		 * JRBeanCollectionDataSource customerJRBean = new
-		 * JRBeanCollectionDataSource(formProperties); Map<String, Object> parameters =
-		 * new HashMap<String, Object>(); parameters.put("CustomerData",customerJRBean);
-		 * 
-		 * JasperPrint jp = JasperFillManager.fillReport(jr, parameters,customerJRBean);
-		 * JasperExportManager.exportReportToPdfFile(jp, "Blank1.pdf");
-		 */
+	  //list=formProperties;
+	  log.info("*****"+prescriptionRequest.toString()+"***********");
+	  
+	//  System.out.println(formProperties.get(1).getValue());
+		
+		JasperReport jr = JasperCompileManager.compileReport("Blank.jrxml");
+
+		JRBeanCollectionDataSource customerJRBean = new JRBeanCollectionDataSource(list);
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("CustomerData", customerJRBean);
+
+		JasperPrint jp = JasperFillManager.fillReport(jr, parameters, customerJRBean);
+		JasperExportManager.exportReportToPdfFile(jp, "Blank1.pdf");
+		 
 	  
 	  
 	  }
 	 
+	  public void saveToRepo(List<RestFormProperty> formProperties) {
+		  System.out.println("----------------into sateToRepo");
+		  List<RestFormProperty> list = new ArrayList<RestFormProperty>();
+		  for(RestFormProperty properties : list) {
+			  System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"+properties.getValue());
+		  }
+		  
+	  }
 
 
 }

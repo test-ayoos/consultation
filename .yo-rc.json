@@ -36,5 +36,19 @@
     ],
     "skipClient": true,
     "skipUserManagement": true
+  },
+  "generator-jhipster-swagger-cli": {
+    "promptValues": {
+      "inputSpec": "/home/karthi/alfresco-community/tomcat/webapps/api-explorer/definitions/alfresco-core.yaml",
+      "cliName": "alfresco_rest_api"
+    },
+    "apis": {
+      "activiti_rest_api": {
+        "spec": "/home/karthi/apache-tomcat-9.0.19/webapps/activiti-rest/docs/activiti.json"
+      },
+      "alfresco_rest_api": {
+        "spec": "/home/karthi/alfresco-community/tomcat/webapps/api-explorer/definitions/alfresco-core.yaml"
+      }
+    }
   }
 }
