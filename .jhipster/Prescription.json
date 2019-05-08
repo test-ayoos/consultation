@@ -4,6 +4,22 @@
         {
             "fieldName": "prescriptionDMSURL",
             "fieldType": "String"
+        },
+        {
+            "fieldName": "drug",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "dose",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "frequency",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "period",
+            "fieldType": "String"
         }
     ],
     "relationships": [],

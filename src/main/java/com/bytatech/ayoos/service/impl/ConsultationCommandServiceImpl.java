@@ -53,7 +53,9 @@ import com.bytatech.ayoos.client.alfresco_rest_api.model.SiteBodyCreate;
 import com.bytatech.ayoos.client.digitalsigning.api.DigitalSigningApi;
 import com.bytatech.ayoos.client.digitalsigning.api.DigitalSigningUploadApi;
 import com.bytatech.ayoos.client.digitalsigning.model.SigningCredentials;
+import com.bytatech.ayoos.domain.Prescription;
 import com.bytatech.ayoos.repository.ConsultationRepository;
+import com.bytatech.ayoos.repository.PrescriptionRepository;
 import com.bytatech.ayoos.repository.search.ConsultationSearchRepository;
 import com.bytatech.ayoos.security.SecurityUtils;
 import com.bytatech.ayoos.service.ConsultationCommandService;
@@ -112,7 +114,8 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
     @Autowired
 	SitesApi sitesApi;
     
-    
+    @Autowired
+    PrescriptionRepository prescriptionRepo;
     
 	public ConsultationCommandServiceImpl(ConsultationRepository consultationRepository,
 			ConsultationMapper consultationMapper) {
@@ -124,7 +127,7 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
 	
 	
 	@Override
-	public void initiate(InitiateMedicalSummaryRequest medicalSummaryRequest) {
+	public String initiate(InitiateMedicalSummaryRequest medicalSummaryRequest) {
 		ProcessInstanceCreateRequest processInstanceCreateRequest=new ProcessInstanceCreateRequest();
    		List<RestVariable> variables=new ArrayList<RestVariable>();
    		//processInstanceCreateRequest.setProcessDefinitionId("consultation:1:43");
@@ -165,7 +168,7 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
 		commandResource.setStatus(taskResponseDefaultInfo.getStatusCode().name());
 		*/
 		
-		
+		return processInstanceId;
    		
    	}
 		
@@ -388,7 +391,7 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
 	}
 
 	@Override
-	public void collectPrescriptionInfo(String taskId, PrescriptionRequest prescriptionRequest) {
+	public void collectPrescriptionInfo(String taskId, Prescription prescriptionRequest) {
 		log .info("into ====================collectPrescriptionInfo()");
    		List<RestFormProperty>formProperties=new ArrayList<RestFormProperty>();
    		SubmitFormRequest submitFormRequest = new SubmitFormRequest();
@@ -435,17 +438,19 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
    		
    		System.out.println("/////////////////////////"+periodFormProperty.getValue()+"////////////////////////////////////////");
    		//System.out.println("***********************"+prescriptionRequest.toString()+"*****************");
+   		
+   		
 		
 		
-		try {
-			createPrescriptionReport(prescriptionRequest);
-		} catch (JRException e) {
-			e.printStackTrace();
-
-		}
+		/*
+		 * try { createPrescriptionReport(prescriptionRequest); } catch (JRException e)
+		 * { e.printStackTrace();
+		 * 
+		 * }
+		 */
 		 
    		//saveToRepo(formProperties);
-   		
+   		prescriptionRepo.save(prescriptionRequest);
    		submitFormRequest.setProperties(formProperties);
    		formsApi.submitForm(submitFormRequest);
 		

@@ -28,7 +28,11 @@ entity ParamedicalExamination {
 
 entity Prescription {
 	
-    prescriptionDMSURL String	
+    prescriptionDMSURL String,
+    drug String,
+    dose String,
+    frequency String,
+    period String	
 }
 
 relationship OneToOne {

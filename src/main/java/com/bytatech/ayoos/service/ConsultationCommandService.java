@@ -13,6 +13,7 @@ import com.bytatech.ayoos.client.activiti_rest_api.model.consultation.Paramedica
 import com.bytatech.ayoos.client.activiti_rest_api.model.consultation.PrescriptionRequest;
 import com.bytatech.ayoos.client.alfresco_rest_api.model.SiteBodyCreate;
 import com.bytatech.ayoos.client.digitalsigning.model.SigningCredentials;
+import com.bytatech.ayoos.domain.Prescription;
 
 //import net.sf.jasperreports.engine.JRException;
 
@@ -22,7 +23,7 @@ import com.bytatech.ayoos.client.digitalsigning.model.SigningCredentials;
 
 public interface ConsultationCommandService {
 
-	void initiate(InitiateMedicalSummaryRequest medicalSummaryRequest);
+	String initiate(InitiateMedicalSummaryRequest medicalSummaryRequest);
 
 	void collectDefaultInfo(String taskId, DefaultInfoRequest defaultInfoRequest);
 
@@ -30,7 +31,7 @@ public interface ConsultationCommandService {
 
 	void collectParamedicalExaminationInfo(String taskId, ParamedicalExaminationRequest paramedicalExxminationRequest);
 
-	void collectPrescriptionInfo(String taskId, PrescriptionRequest prescriptionRequest);
+	void collectPrescriptionInfo(String taskId, Prescription prescriptionRequest);
 
 	void createPrescriptionReport();
 

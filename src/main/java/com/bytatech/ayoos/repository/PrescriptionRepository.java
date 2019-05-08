@@ -1,5 +1,6 @@
 package com.bytatech.ayoos.repository;
 
+import com.bytatech.ayoos.client.activiti_rest_api.model.consultation.PrescriptionRequest;
 import com.bytatech.ayoos.domain.Prescription;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
@@ -11,5 +12,7 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface PrescriptionRepository extends JpaRepository<Prescription, Long> {
+
+	void save(PrescriptionRequest prescriptionRequest);
 
 }

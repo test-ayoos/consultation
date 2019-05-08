@@ -11,6 +11,14 @@ public class PrescriptionDTO implements Serializable {
 
     private String prescriptionDMSURL;
 
+    private String drug;
+
+    private String dose;
+
+    private String frequency;
+
+    private String period;
+
 
     public Long getId() {
         return id;
@@ -26,6 +34,38 @@ public class PrescriptionDTO implements Serializable {
 
     public void setPrescriptionDMSURL(String prescriptionDMSURL) {
         this.prescriptionDMSURL = prescriptionDMSURL;
+    }
+
+    public String getDrug() {
+        return drug;
+    }
+
+    public void setDrug(String drug) {
+        this.drug = drug;
+    }
+
+    public String getDose() {
+        return dose;
+    }
+
+    public void setDose(String dose) {
+        this.dose = dose;
+    }
+
+    public String getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
+    }
+
+    public String getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period;
     }
 
     @Override
@@ -54,6 +94,10 @@ public class PrescriptionDTO implements Serializable {
         return "PrescriptionDTO{" +
             "id=" + getId() +
             ", prescriptionDMSURL='" + getPrescriptionDMSURL() + "'" +
+            ", drug='" + getDrug() + "'" +
+            ", dose='" + getDose() + "'" +
+            ", frequency='" + getFrequency() + "'" +
+            ", period='" + getPeriod() + "'" +
             "}";
     }
 }

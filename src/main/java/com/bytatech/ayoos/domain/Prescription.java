@@ -28,6 +28,18 @@ public class Prescription implements Serializable {
     @Column(name = "prescription_dmsurl")
     private String prescriptionDMSURL;
 
+    @Column(name = "drug")
+    private String drug;
+
+    @Column(name = "dose")
+    private String dose;
+
+    @Column(name = "frequency")
+    private String frequency;
+
+    @Column(name = "period")
+    private String period;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -48,6 +60,58 @@ public class Prescription implements Serializable {
 
     public void setPrescriptionDMSURL(String prescriptionDMSURL) {
         this.prescriptionDMSURL = prescriptionDMSURL;
+    }
+
+    public String getDrug() {
+        return drug;
+    }
+
+    public Prescription drug(String drug) {
+        this.drug = drug;
+        return this;
+    }
+
+    public void setDrug(String drug) {
+        this.drug = drug;
+    }
+
+    public String getDose() {
+        return dose;
+    }
+
+    public Prescription dose(String dose) {
+        this.dose = dose;
+        return this;
+    }
+
+    public void setDose(String dose) {
+        this.dose = dose;
+    }
+
+    public String getFrequency() {
+        return frequency;
+    }
+
+    public Prescription frequency(String frequency) {
+        this.frequency = frequency;
+        return this;
+    }
+
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
+    }
+
+    public String getPeriod() {
+        return period;
+    }
+
+    public Prescription period(String period) {
+        this.period = period;
+        return this;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -76,6 +140,10 @@ public class Prescription implements Serializable {
         return "Prescription{" +
             "id=" + getId() +
             ", prescriptionDMSURL='" + getPrescriptionDMSURL() + "'" +
+            ", drug='" + getDrug() + "'" +
+            ", dose='" + getDose() + "'" +
+            ", frequency='" + getFrequency() + "'" +
+            ", period='" + getPeriod() + "'" +
             "}";
     }
 }

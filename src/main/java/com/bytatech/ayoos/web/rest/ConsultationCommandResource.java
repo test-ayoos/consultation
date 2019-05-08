@@ -16,6 +16,7 @@ import com.bytatech.ayoos.client.activiti_rest_api.model.consultation.Paramedica
 import com.bytatech.ayoos.client.activiti_rest_api.model.consultation.PrescriptionRequest;
 import com.bytatech.ayoos.client.alfresco_rest_api.model.SiteBodyCreate;
 import com.bytatech.ayoos.client.digitalsigning.model.SigningCredentials;
+import com.bytatech.ayoos.domain.Prescription;
 import com.bytatech.ayoos.service.ConsultationCommandService;
 
 
@@ -38,9 +39,10 @@ public class ConsultationCommandResource {
     ConsultationCommandService consultationCommandService;
     
     @PostMapping("/initiateConsultation")
-    public void initiateConsultationSummary(@RequestBody InitiateMedicalSummaryRequest medicalSummaryRequest) {
+    public String initiateConsultationSummary(@RequestBody InitiateMedicalSummaryRequest medicalSummaryRequest) {
     	
-    	consultationCommandService.initiate(medicalSummaryRequest);
+    	return consultationCommandService.initiate(medicalSummaryRequest);
+		 
     }
     
     @PostMapping("/collectDefaultInfo/{taskId}")
@@ -74,7 +76,7 @@ public class ConsultationCommandResource {
     
     
     @PostMapping("/collectPrescriptionInfo/{taskId}")
-    public void collectPrescriptionInformations(@PathVariable String taskId, @RequestBody PrescriptionRequest prescriptionRequest ){
+    public void collectPrescriptionInformations(@PathVariable String taskId, @RequestBody Prescription prescriptionRequest ){
     	consultationCommandService.collectPrescriptionInfo(taskId,prescriptionRequest);
     }
     

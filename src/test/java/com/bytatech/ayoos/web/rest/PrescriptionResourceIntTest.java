@@ -52,6 +52,18 @@ public class PrescriptionResourceIntTest {
     private static final String DEFAULT_PRESCRIPTION_DMSURL = "AAAAAAAAAA";
     private static final String UPDATED_PRESCRIPTION_DMSURL = "BBBBBBBBBB";
 
+    private static final String DEFAULT_DRUG = "AAAAAAAAAA";
+    private static final String UPDATED_DRUG = "BBBBBBBBBB";
+
+    private static final String DEFAULT_DOSE = "AAAAAAAAAA";
+    private static final String UPDATED_DOSE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_FREQUENCY = "AAAAAAAAAA";
+    private static final String UPDATED_FREQUENCY = "BBBBBBBBBB";
+
+    private static final String DEFAULT_PERIOD = "AAAAAAAAAA";
+    private static final String UPDATED_PERIOD = "BBBBBBBBBB";
+
     @Autowired
     private PrescriptionRepository prescriptionRepository;
 
@@ -108,7 +120,11 @@ public class PrescriptionResourceIntTest {
      */
     public static Prescription createEntity(EntityManager em) {
         Prescription prescription = new Prescription()
-            .prescriptionDMSURL(DEFAULT_PRESCRIPTION_DMSURL);
+            .prescriptionDMSURL(DEFAULT_PRESCRIPTION_DMSURL)
+            .drug(DEFAULT_DRUG)
+            .dose(DEFAULT_DOSE)
+            .frequency(DEFAULT_FREQUENCY)
+            .period(DEFAULT_PERIOD);
         return prescription;
     }
 
@@ -134,6 +150,10 @@ public class PrescriptionResourceIntTest {
         assertThat(prescriptionList).hasSize(databaseSizeBeforeCreate + 1);
         Prescription testPrescription = prescriptionList.get(prescriptionList.size() - 1);
         assertThat(testPrescription.getPrescriptionDMSURL()).isEqualTo(DEFAULT_PRESCRIPTION_DMSURL);
+        assertThat(testPrescription.getDrug()).isEqualTo(DEFAULT_DRUG);
+        assertThat(testPrescription.getDose()).isEqualTo(DEFAULT_DOSE);
+        assertThat(testPrescription.getFrequency()).isEqualTo(DEFAULT_FREQUENCY);
+        assertThat(testPrescription.getPeriod()).isEqualTo(DEFAULT_PERIOD);
 
         // Validate the Prescription in Elasticsearch
         verify(mockPrescriptionSearchRepository, times(1)).save(testPrescription);
@@ -173,7 +193,11 @@ public class PrescriptionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(prescription.getId().intValue())))
-            .andExpect(jsonPath("$.[*].prescriptionDMSURL").value(hasItem(DEFAULT_PRESCRIPTION_DMSURL.toString())));
+            .andExpect(jsonPath("$.[*].prescriptionDMSURL").value(hasItem(DEFAULT_PRESCRIPTION_DMSURL.toString())))
+            .andExpect(jsonPath("$.[*].drug").value(hasItem(DEFAULT_DRUG.toString())))
+            .andExpect(jsonPath("$.[*].dose").value(hasItem(DEFAULT_DOSE.toString())))
+            .andExpect(jsonPath("$.[*].frequency").value(hasItem(DEFAULT_FREQUENCY.toString())))
+            .andExpect(jsonPath("$.[*].period").value(hasItem(DEFAULT_PERIOD.toString())));
     }
     
     @Test
@@ -187,7 +211,11 @@ public class PrescriptionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(prescription.getId().intValue()))
-            .andExpect(jsonPath("$.prescriptionDMSURL").value(DEFAULT_PRESCRIPTION_DMSURL.toString()));
+            .andExpect(jsonPath("$.prescriptionDMSURL").value(DEFAULT_PRESCRIPTION_DMSURL.toString()))
+            .andExpect(jsonPath("$.drug").value(DEFAULT_DRUG.toString()))
+            .andExpect(jsonPath("$.dose").value(DEFAULT_DOSE.toString()))
+            .andExpect(jsonPath("$.frequency").value(DEFAULT_FREQUENCY.toString()))
+            .andExpect(jsonPath("$.period").value(DEFAULT_PERIOD.toString()));
     }
 
     @Test
@@ -211,7 +239,11 @@ public class PrescriptionResourceIntTest {
         // Disconnect from session so that the updates on updatedPrescription are not directly saved in db
         em.detach(updatedPrescription);
         updatedPrescription
-            .prescriptionDMSURL(UPDATED_PRESCRIPTION_DMSURL);
+            .prescriptionDMSURL(UPDATED_PRESCRIPTION_DMSURL)
+            .drug(UPDATED_DRUG)
+            .dose(UPDATED_DOSE)
+            .frequency(UPDATED_FREQUENCY)
+            .period(UPDATED_PERIOD);
         PrescriptionDTO prescriptionDTO = prescriptionMapper.toDto(updatedPrescription);
 
         restPrescriptionMockMvc.perform(put("/api/prescriptions")
@@ -224,6 +256,10 @@ public class PrescriptionResourceIntTest {
         assertThat(prescriptionList).hasSize(databaseSizeBeforeUpdate);
         Prescription testPrescription = prescriptionList.get(prescriptionList.size() - 1);
         assertThat(testPrescription.getPrescriptionDMSURL()).isEqualTo(UPDATED_PRESCRIPTION_DMSURL);
+        assertThat(testPrescription.getDrug()).isEqualTo(UPDATED_DRUG);
+        assertThat(testPrescription.getDose()).isEqualTo(UPDATED_DOSE);
+        assertThat(testPrescription.getFrequency()).isEqualTo(UPDATED_FREQUENCY);
+        assertThat(testPrescription.getPeriod()).isEqualTo(UPDATED_PERIOD);
 
         // Validate the Prescription in Elasticsearch
         verify(mockPrescriptionSearchRepository, times(1)).save(testPrescription);
@@ -284,7 +320,11 @@ public class PrescriptionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(prescription.getId().intValue())))
-            .andExpect(jsonPath("$.[*].prescriptionDMSURL").value(hasItem(DEFAULT_PRESCRIPTION_DMSURL)));
+            .andExpect(jsonPath("$.[*].prescriptionDMSURL").value(hasItem(DEFAULT_PRESCRIPTION_DMSURL)))
+            .andExpect(jsonPath("$.[*].drug").value(hasItem(DEFAULT_DRUG)))
+            .andExpect(jsonPath("$.[*].dose").value(hasItem(DEFAULT_DOSE)))
+            .andExpect(jsonPath("$.[*].frequency").value(hasItem(DEFAULT_FREQUENCY)))
+            .andExpect(jsonPath("$.[*].period").value(hasItem(DEFAULT_PERIOD)));
     }
 
     @Test

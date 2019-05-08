@@ -26,6 +26,22 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="drug" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="dose" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="frequency" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="period" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         
