@@ -219,7 +219,7 @@ activitiRestApi:
        password: kermit
        
 alfrescoRestApi:
-  url: http://35.225.189.219:8075/alfresco/api/-default-/public/alfresco/versions/1
+  #url: http://35.225.189.219:8075/alfresco/api/-default-/public/alfresco/versions/1
   security:
     basicAuth:
        username: admin   

@@ -1,9 +1,14 @@
 package com.bytatech.ayoos.service.impl;
 
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.sql.DataSource;
 import javax.validation.Valid;
 
 import org.apache.commons.lang.SerializationUtils;
@@ -29,6 +34,14 @@ import com.bytatech.ayoos.repository.ConsultationRepository;
 import com.bytatech.ayoos.repository.search.ConsultationSearchRepository;
 import com.bytatech.ayoos.service.ConsultationQueryService;
 import com.bytatech.ayoos.service.mapper.ConsultationMapper;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 /**
  * Service Implementation for managing MedicalSummary.
  */
@@ -52,8 +65,7 @@ public class ConsultationQueryServiceImpl implements ConsultationQueryService{
 	    private final ConsultationMapper consultationMapper;
 
 	    private final ConsultationSearchRepository consultationSearchRepository;
-	
-	
+	    	
 	
 	public ConsultationQueryServiceImpl(ConsultationRepository consultationRepository,
 				ConsultationMapper consultationMapper, ConsultationSearchRepository consultationSearchRepository) {
@@ -203,11 +215,6 @@ public class ConsultationQueryServiceImpl implements ConsultationQueryService{
 		
 	}
 	
-	
-	
-	
-	
-
 	public ResponseEntity<DataResponse> getHistoricTaskusingProcessInstanceIdAndName(String processInstanceId,
 			String name) {
 		return historyApi.listHistoricTaskInstances(null, processInstanceId, null, null, null, null, null, null, null,
@@ -215,5 +222,35 @@ public class ConsultationQueryServiceImpl implements ConsultationQueryService{
 				null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 
 	}
+	
+
+	   /**
+	    * Get produtsReport.
+	    *    
+	    * @return the byte[]
+	    * @throws JRException
+	    */
+	   @Override  
+	   public byte[] getPrescriptionAsPdf() throws JRException {
+	   
+	      log.debug("Request to pdf of all products");
+
+	      JasperReport jr = JasperCompileManager.compileReport("prescription_2.jrxml");
+
+	      JRBeanCollectionDataSource datasource = new JRBeanCollectionDataSource(ConsultationCommandServiceImpl.getPrescriptionRequestList());
+	      
+	     
+	      //Preparing parameters
+	     Map<String, Object> parameters = new HashMap<String, Object>();
+	     parameters.put("prescription", jr);
+
+	     
+	     JasperPrint jp = JasperFillManager.fillReport(jr, parameters, datasource);
+
+	     //JasperExportManager.exportReportToPdfFile(jp, "UserNeeds.pdf");
+
+	    return JasperExportManager.exportReportToPdf(jp);
+       }    
+
 
 }

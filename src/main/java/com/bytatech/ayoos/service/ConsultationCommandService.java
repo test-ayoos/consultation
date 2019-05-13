@@ -15,6 +15,8 @@ import com.bytatech.ayoos.client.alfresco_rest_api.model.SiteBodyCreate;
 import com.bytatech.ayoos.client.digitalsigning.model.SigningCredentials;
 import com.bytatech.ayoos.domain.Prescription;
 
+import net.sf.jasperreports.engine.JRException;
+
 //import net.sf.jasperreports.engine.JRException;
 
 /**
@@ -31,7 +33,7 @@ public interface ConsultationCommandService {
 
 	void collectParamedicalExaminationInfo(String taskId, ParamedicalExaminationRequest paramedicalExxminationRequest);
 
-	void collectPrescriptionInfo(String taskId, Prescription prescriptionRequest);
+	void collectPrescriptionInfo(String taskId, PrescriptionRequest prescriptionRequest);
 
 	void createPrescriptionReport();
 
@@ -43,6 +45,8 @@ public interface ConsultationCommandService {
 
 	void createSite(SiteBodyCreate siteBodyCreate);
 	
-	//void createPrescriptionReport(List<RestFormProperty> formProperties) throws JRException;
+	void createPrescriptionReport(List<RestFormProperty> formProperties) throws JRException;
+	
+	
 
 }

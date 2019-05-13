@@ -14,6 +14,8 @@ import com.bytatech.ayoos.client.activiti_rest_api.model.TaskResponse;
 import com.bytatech.ayoos.client.activiti_rest_api.model.consultation.ConsultationDetails;
 import com.bytatech.ayoos.client.activiti_rest_api.model.consultation.PrescriptionRequest;
 
+import net.sf.jasperreports.engine.JRException;
+
 public interface ConsultationQueryService {
 
 	ResponseEntity<DataResponse> getTasks(String name, String nameLike, String description, String priority,
@@ -49,6 +51,8 @@ public interface ConsultationQueryService {
 	ResponseEntity<HistoricProcessInstanceResponse> getHistoricProcessInstances(String processInstanceId);
 
 	PrescriptionRequest getPrescriptionDetails(String processInstanceId);
+		
+	byte[] getPrescriptionAsPdf() throws JRException;
 
 	
 

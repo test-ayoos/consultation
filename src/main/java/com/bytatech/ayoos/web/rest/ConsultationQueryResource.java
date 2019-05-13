@@ -6,6 +6,9 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +30,7 @@ import com.bytatech.ayoos.client.activiti_rest_api.model.consultation.Prescripti
 import com.bytatech.ayoos.service.ConsultationQueryService;
 
 import io.swagger.annotations.ApiParam;
+import net.sf.jasperreports.engine.JRException;
 
 /**
  * REST controller for managing MedicalSummary.
@@ -164,4 +168,36 @@ public class ConsultationQueryResource {
 	
 		return consultationSummaryQueryService.getHistoricProcessInstances(processInstanceId);
 	}
+	
+	
+	 /**
+	    * GET  /pdf/ProdutsReport : get the pdf of all the products.
+	    *  
+	    * @return the byte[]
+	    * @return the ResponseEntity with status 200 (OK) and the pdf of products in body
+	    */
+	   
+	@GetMapping("/pdf/prescriptionReport")
+	public ResponseEntity<byte[]>  getPrescriptionAsPdf() {
+
+	 log.debug("REST request to get a pdf of products");
+
+	 byte[] pdfContents = null;
+
+	 try
+	     {
+	pdfContents=consultationSummaryQueryService.getPrescriptionAsPdf();
+	     }catch (JRException e) {
+	          e.printStackTrace();
+	      }
+	HttpHeaders headers = new HttpHeaders();
+	headers.setContentType(MediaType.parseMediaType("application/pdf"));
+	       String fileName ="prescriptionReport.pdf";
+	headers.add("content-disposition", "attachment; filename=" + fileName);
+	ResponseEntity<byte[]> response = new ResponseEntity<byte[]>(
+	           pdfContents, headers, HttpStatus.OK);        
+	      return response;
+	     
+	}
+
 }

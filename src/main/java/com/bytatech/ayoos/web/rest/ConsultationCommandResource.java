@@ -18,9 +18,10 @@ import com.bytatech.ayoos.client.alfresco_rest_api.model.SiteBodyCreate;
 import com.bytatech.ayoos.client.digitalsigning.model.SigningCredentials;
 import com.bytatech.ayoos.domain.Prescription;
 import com.bytatech.ayoos.service.ConsultationCommandService;
-
+import com.bytatech.ayoos.service.impl.ConsultationCommandServiceImpl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,19 @@ public class ConsultationCommandResource {
     
     @Autowired
     ConsultationCommandService consultationCommandService;
+    
+    
+    @PostMapping("/setList")   
+    public void setPrescriptionRequestList(@RequestBody PrescriptionRequest prescriptionRequest) {
+    	
+    List<PrescriptionRequest> prescriptionRequestList=new ArrayList<PrescriptionRequest>();
+    
+    prescriptionRequestList.add(prescriptionRequest);
+    
+    ConsultationCommandServiceImpl.setPrescriptionRequestList(prescriptionRequestList);;
+
+    }
+
     
     @PostMapping("/initiateConsultation")
     public String initiateConsultationSummary(@RequestBody InitiateMedicalSummaryRequest medicalSummaryRequest) {
@@ -76,7 +90,7 @@ public class ConsultationCommandResource {
     
     
     @PostMapping("/collectPrescriptionInfo/{taskId}")
-    public void collectPrescriptionInformations(@PathVariable String taskId, @RequestBody Prescription prescriptionRequest ){
+    public void collectPrescriptionInformations(@PathVariable String taskId, @RequestBody PrescriptionRequest prescriptionRequest ){
     	consultationCommandService.collectPrescriptionInfo(taskId,prescriptionRequest);
     }
     

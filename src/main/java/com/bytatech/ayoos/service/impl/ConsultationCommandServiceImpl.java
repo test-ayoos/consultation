@@ -117,6 +117,8 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
     @Autowired
     PrescriptionRepository prescriptionRepo;
     
+    private static List<PrescriptionRequest> prescriptionRequestList = new ArrayList<PrescriptionRequest>();
+    
 	public ConsultationCommandServiceImpl(ConsultationRepository consultationRepository,
 			ConsultationMapper consultationMapper) {
 		this.consultationRepository = consultationRepository;
@@ -391,7 +393,7 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
 	}
 
 	@Override
-	public void collectPrescriptionInfo(String taskId, Prescription prescriptionRequest) {
+	public void collectPrescriptionInfo(String taskId, PrescriptionRequest prescriptionRequest) {
 		log .info("into ====================collectPrescriptionInfo()");
    		List<RestFormProperty>formProperties=new ArrayList<RestFormProperty>();
    		SubmitFormRequest submitFormRequest = new SubmitFormRequest();
@@ -439,8 +441,9 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
    		System.out.println("/////////////////////////"+periodFormProperty.getValue()+"////////////////////////////////////////");
    		//System.out.println("***********************"+prescriptionRequest.toString()+"*****************");
    		
-   		
-		
+   		List<PrescriptionRequest>request=new ArrayList<PrescriptionRequest>();
+   		request.add(prescriptionRequest);
+   		setPrescriptionRequestList(request);
 		
 		/*
 		 * try { createPrescriptionReport(prescriptionRequest); } catch (JRException e)
@@ -449,8 +452,9 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
 		 * }
 		 */
 		 
+		 
    		//saveToRepo(formProperties);
-   		prescriptionRepo.save(prescriptionRequest);
+   		//prescriptionRepo.save(prescriptionRequest);
    		submitFormRequest.setProperties(formProperties);
    		formsApi.submitForm(submitFormRequest);
 		
@@ -490,7 +494,7 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
 		nodeBodyCreate.setName(name);
 		nodeBodyCreate.setNodeType("cm:content");
 		//http://127.0.0.1:8013/share/page/site/dsite/documentlibrary
-		nodeBodyCreate.setRelativePath("Sites/patient");
+		nodeBodyCreate.setRelativePath("Sites/pat/documentlibrary");
 		//nodeBodyCreate.setRelativePath("Signed Documents");
 		NodeEntry nodeEntry = nodesApi.createNode("-my-", nodeBodyCreate, true, null, null).getBody();
 		nodesApi.updateNodeContent(nodeEntry.getEntry().getId(), resource, true, null, null, null, null);
@@ -583,32 +587,44 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
 		
 	//@Override
 	
-	  public void createPrescriptionReport(PrescriptionRequest prescriptionRequest)
-	  throws JRException {
-	  
-	  log.info("REST request to create pdf**********");
-	  
-	  
-	  List<PrescriptionRequest> list = new ArrayList<PrescriptionRequest>();
-	  
-	  //list=formProperties;
-	  log.info("*****"+prescriptionRequest.toString()+"***********");
-	  
-	//  System.out.println(formProperties.get(1).getValue());
-		
-		JasperReport jr = JasperCompileManager.compileReport("Blank.jrxml");
+	
 
-		JRBeanCollectionDataSource customerJRBean = new JRBeanCollectionDataSource(list);
-		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("CustomerData", customerJRBean);
+	public static List<PrescriptionRequest> getPrescriptionRequestList() {
+		return prescriptionRequestList;
+	}
 
-		JasperPrint jp = JasperFillManager.fillReport(jr, parameters, customerJRBean);
-		JasperExportManager.exportReportToPdfFile(jp, "Blank1.pdf");
-		 
-	  
-	  
-	  }
-	 
+	public static void setPrescriptionRequestList(List<PrescriptionRequest> prescriptionRequestList) {
+		ConsultationCommandServiceImpl.prescriptionRequestList = prescriptionRequestList;
+	}
+	
+	
+	
+	/*
+	 * public void createPrescriptionReport(PrescriptionRequest
+	 * prescriptionRequest)throws JRException {
+	 * 
+	 * log.info("REST request to create pdf**********");
+	 * 
+	 * 
+	 * List<PrescriptionRequest> list = new ArrayList<PrescriptionRequest>();
+	 * 
+	 * //list=formProperties;
+	 * log.info("*****"+prescriptionRequest.toString()+"***********");
+	 * 
+	 * // System.out.println(formProperties.get(1).getValue()); JasperReport jr =
+	 * JasperCompileManager.compileReport("prescription_2.jrxml");
+	 * 
+	 * JRBeanCollectionDataSource customerJRBean = new
+	 * JRBeanCollectionDataSource(list); Map<String, Object> parameters = new
+	 * HashMap<String, Object>(); parameters.put("CustomerData", customerJRBean);
+	 * 
+	 * JasperPrint jp = JasperFillManager.fillReport(jr, parameters,
+	 * customerJRBean); JasperExportManager.exportReportToPdfFile(jp, "Blank1.pdf");
+	 * 
+	 * 
+	 * 
+	 * }
+	 */
 	  public void saveToRepo(List<RestFormProperty> formProperties) {
 		  System.out.println("----------------into sateToRepo");
 		  List<RestFormProperty> list = new ArrayList<RestFormProperty>();
@@ -618,5 +634,15 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
 		  
 	  }
 
+
+
+	@Override
+	public void createPrescriptionReport(List<RestFormProperty> formProperties) throws JRException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	  
+	  
 
 }
