@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bytatech.ayoos.client.activiti_rest_api.model.RestFormProperty;
@@ -50,7 +51,7 @@ public interface ConsultationCommandService {
 	
 	void getPatientDMSID(Long id);
 
-	String uploadFile(@RequestBody MultipartFile file);
+	String uploadFile(@RequestParam MultipartFile file);
 	
 
 }

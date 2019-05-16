@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -117,7 +118,7 @@ public class ConsultationCommandResource {
    
 	
 	@PostMapping("/uploadFile")
-	public String uploadFile(@RequestBody MultipartFile file) {
+	public String uploadFile(@RequestParam MultipartFile file) {
 		log.info("************************into upload file****************");
 		consultationCommandService.uploadFile(file);
 		return "success";
