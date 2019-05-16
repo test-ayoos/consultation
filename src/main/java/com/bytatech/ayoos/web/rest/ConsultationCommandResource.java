@@ -118,7 +118,7 @@ public class ConsultationCommandResource {
    
 	
 	@PostMapping("/uploadFile")
-	public String uploadFile(@RequestParam MultipartFile file) {
+	public String uploadFile(@RequestBody MultipartFile file) {
 		log.info("************************into upload file****************");
 		consultationCommandService.uploadFile(file);
 		return "success";
