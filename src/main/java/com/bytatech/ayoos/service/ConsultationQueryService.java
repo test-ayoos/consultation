@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 
 import com.bytatech.ayoos.client.activiti_rest_api.model.DataResponse;
@@ -50,9 +51,11 @@ public interface ConsultationQueryService {
 
 	ResponseEntity<HistoricProcessInstanceResponse> getHistoricProcessInstances(String processInstanceId);
 
-	PrescriptionRequest getPrescriptionDetails(String processInstanceId);
+	//PrescriptionRequest getPrescriptionDetails(String processInstanceId);
 		
-	byte[] getPrescriptionAsPdf() throws JRException;
+	
+	
+	byte[] getPrescriptionAsPdfDowload()throws JRException;
 
 	
 

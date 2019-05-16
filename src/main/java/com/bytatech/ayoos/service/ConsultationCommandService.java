@@ -2,6 +2,7 @@ package com.bytatech.ayoos.service;
 
 import java.util.List;
 
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,20 +34,21 @@ public interface ConsultationCommandService {
 
 	void collectParamedicalExaminationInfo(String taskId, ParamedicalExaminationRequest paramedicalExxminationRequest);
 
-	void collectPrescriptionInfo(String taskId, PrescriptionRequest prescriptionRequest);
+	void collectPrescriptionInfo(String taskId, List<PrescriptionRequest> prescriptionRequest);
 
-	void createPrescriptionReport();
+	//void createPrescriptionReport();
 
-	void createPrescriptionReportAndSave();
+	//void createPrescriptionReportAndSave();
 	
 	String sign(@RequestBody SigningCredentials signingCredentials);
 
-	String upload(MultipartFile file);
+	String upload(Resource resource);
 
 	void createSite(SiteBodyCreate siteBodyCreate);
 	
 	void createPrescriptionReport(List<RestFormProperty> formProperties) throws JRException;
 	
+	void getPatientDMSID(Long id);
 	
 
 }

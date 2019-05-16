@@ -39,8 +39,8 @@
   },
   "generator-jhipster-swagger-cli": {
     "promptValues": {
-      "inputSpec": "/home/karthi/alfresco-community/tomcat/webapps/api-explorer/definitions/alfresco-core.yaml",
-      "cliName": "alfresco_rest_api"
+      "inputSpec": "http://35.243.137.225:8081/v2/api-docs",
+      "cliName": "patientService"
     },
     "apis": {
       "activiti_rest_api": {

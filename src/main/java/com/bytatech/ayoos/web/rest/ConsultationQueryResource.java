@@ -43,11 +43,11 @@ public class ConsultationQueryResource {
 
     private static final String ENTITY_NAME = "consultation";
     
-    private final ConsultationQueryService consultationSummaryQueryService;
+    private final ConsultationQueryService consultationQueryService;
 
 	public ConsultationQueryResource(ConsultationQueryService medicalSummaryQueryService) {
 	
-		this.consultationSummaryQueryService = medicalSummaryQueryService;
+		this.consultationQueryService = medicalSummaryQueryService;
 	}
 	
 	@GetMapping("/tasks")
@@ -95,7 +95,7 @@ public class ConsultationQueryResource {
 			   @ApiParam(value = "Select tasks that has been claimed or assigned to user or waiting to claim by user (candidate user or groups).") @Valid @RequestParam(value = "candidateOrAssigned", required = false) String candidateOrAssigned,
 			   @ApiParam(value = "Select tasks with the given category. Note that this is the task category, not the category of the process definition (namespace within the BPMN Xml). ") @Valid @RequestParam(value = "category", required = false) String category){
 			
-			return consultationSummaryQueryService.getTasks(name, nameLike, description, priority, minimumPriority, maximumPriority, assignee, assigneeLike, 
+			return consultationQueryService.getTasks(name, nameLike, description, priority, minimumPriority, maximumPriority, assignee, assigneeLike, 
 					owner, ownerLike, unassigned, delegationState, candidateUser, candidateGroup, candidateGroups, involvedUser, taskDefinitionKey, 
 					taskDefinitionKeyLike, processInstanceId, processInstanceBusinessKey, processInstanceBusinessKeyLike, processDefinitionId, 
 					processDefinitionKey, processDefinitionKeyLike, processDefinitionName, processDefinitionNameLike, executionId, createdOn, 
@@ -107,7 +107,7 @@ public class ConsultationQueryResource {
 
 	@GetMapping("/tasks/{taskId}")
 	public ResponseEntity<TaskResponse> getTask(@PathVariable String taskId){
-		return consultationSummaryQueryService.getTask(taskId);
+		return consultationQueryService.getTask(taskId);
 	}
 
 	
@@ -116,14 +116,14 @@ public class ConsultationQueryResource {
 	public ResponseEntity<RestVariable> getTaskInstanceVariable(@PathVariable String taskId,@PathVariable String variableName,
 			@RequestParam(required=false) String scope){
 		
-		return consultationSummaryQueryService.getTaskInstanceVariable(taskId,variableName,scope);
+		return consultationQueryService.getTaskInstanceVariable(taskId,variableName,scope);
 		
 	}
 	
 	@GetMapping("/tasks/{taskId}/variables")
 	public ResponseEntity<List<RestVariable>> getTaskVariables(@PathVariable String taskId){
 		
-		return consultationSummaryQueryService.getTaskVariables(taskId);
+		return consultationQueryService.getTaskVariables(taskId);
 		
 	}
 	
@@ -133,7 +133,7 @@ public class ConsultationQueryResource {
 	public ResponseEntity<DataResponse> getHistoricTask(@RequestBody HistoricTaskInstanceQueryRequest request) {
 		System.out.println("++++++++++++++++++++++++++++##########" + request.getProcessInstanceId()
 				+ "^^^^^^^^^^^^^^^^^^^^^^^^^" + request.getTaskName());
-		return consultationSummaryQueryService.getHistoricTask(request);
+		return consultationQueryService.getHistoricTask(request);
 	}
 	
 	
@@ -144,7 +144,7 @@ public class ConsultationQueryResource {
 			@RequestParam(required = false)String executionId,@RequestParam(required = false) String activityInstanceId,
 			@RequestParam(required = false)String taskId,@RequestParam(required = false)Boolean selectOnlyFormProperties,
 			@RequestParam(required = false)Boolean selectOnlyVariableUpdates){ 	
-		return  consultationSummaryQueryService.getTaskFormProperties(id, processInstanceId, executionId, activityInstanceId, taskId, 
+		return  consultationQueryService.getTaskFormProperties(id, processInstanceId, executionId, activityInstanceId, taskId, 
 				selectOnlyFormProperties, selectOnlyVariableUpdates);
 	}
 	
@@ -152,21 +152,23 @@ public class ConsultationQueryResource {
 	@GetMapping("/consultation-details/{processInstanceId}")
 	public ConsultationDetails getConsultationDetails(@PathVariable String processInstanceId) {
 
-		return consultationSummaryQueryService.getConsultationDetails(processInstanceId);
+		return consultationQueryService.getConsultationDetails(processInstanceId);
 	}
 	
-	@GetMapping("/prescription-details/{processInstanceId}")
-	public PrescriptionRequest getPrescriptionDetails(@PathVariable String processInstanceId) {
-		
-		return consultationSummaryQueryService.getPrescriptionDetails(processInstanceId);
-	}
-	
+	/*
+	 * @GetMapping("/prescription-details/{processInstanceId}") public
+	 * PrescriptionRequest getPrescriptionDetails(@PathVariable String
+	 * processInstanceId) {
+	 * 
+	 * return
+	 * consultationSummaryQueryService.getPrescriptionDetails(processInstanceId); }
+	 */
 	
 	
 	@GetMapping("/historic-process-instances/{processInstanceId}")
 	public ResponseEntity<HistoricProcessInstanceResponse> getHistoricProcessInstances(String processInstanceId) {
 	
-		return consultationSummaryQueryService.getHistoricProcessInstances(processInstanceId);
+		return consultationQueryService.getHistoricProcessInstances(processInstanceId);
 	}
 	
 	
@@ -177,27 +179,27 @@ public class ConsultationQueryResource {
 	    * @return the ResponseEntity with status 200 (OK) and the pdf of products in body
 	    */
 	   
-	@GetMapping("/pdf/prescriptionReport")
-	public ResponseEntity<byte[]>  getPrescriptionAsPdf() {
+	
+	@GetMapping("/pdf/downloadPrescriptionReport")
+	public ResponseEntity<byte[]> getPrescriptionAsPdf() {
 
-	 log.debug("REST request to get a pdf of products");
+		log.debug("REST request to get a pdf of products");
 
-	 byte[] pdfContents = null;
+		byte[] pdfContents = null;
 
-	 try
-	     {
-	pdfContents=consultationSummaryQueryService.getPrescriptionAsPdf();
-	     }catch (JRException e) {
-	          e.printStackTrace();
-	      }
-	HttpHeaders headers = new HttpHeaders();
-	headers.setContentType(MediaType.parseMediaType("application/pdf"));
-	       String fileName ="prescriptionReport.pdf";
-	headers.add("content-disposition", "attachment; filename=" + fileName);
-	ResponseEntity<byte[]> response = new ResponseEntity<byte[]>(
-	           pdfContents, headers, HttpStatus.OK);        
-	      return response;
-	     
+		try {
+			pdfContents = consultationQueryService.getPrescriptionAsPdfDowload();
+		} catch (JRException e) {
+			e.printStackTrace();
+		}
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.parseMediaType("application/pdf"));
+		String fileName = "prescriptionReport.pdf";
+		headers.add("content-disposition", "attachment; filename=" + fileName);
+		ResponseEntity<byte[]> response = new ResponseEntity<byte[]>(pdfContents, headers, HttpStatus.OK);
+		return response;
+
 	}
+	 
 
 }

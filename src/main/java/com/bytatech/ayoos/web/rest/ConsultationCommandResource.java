@@ -2,6 +2,7 @@ package com.bytatech.ayoos.web.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -90,25 +91,23 @@ public class ConsultationCommandResource {
     
     
     @PostMapping("/collectPrescriptionInfo/{taskId}")
-    public void collectPrescriptionInformations(@PathVariable String taskId, @RequestBody PrescriptionRequest prescriptionRequest ){
+    public void collectPrescriptionInformations(@PathVariable String taskId, @RequestBody List<PrescriptionRequest> prescriptionRequest ){
     	consultationCommandService.collectPrescriptionInfo(taskId,prescriptionRequest);
     }
     
     //create report for prescription with jsaper
-    
-   @PostMapping("/createPrescriptionReport")
-    public void createPrescriptionReports( ){
-    	
-    	consultationCommandService.createPrescriptionReport();
-    }
-    
-   
-   @PostMapping("/createPrescriptionReportAndSave")
-   public void createPrescriptionReportAndSave( ){
-   	
-   	consultationCommandService.createPrescriptionReportAndSave();
-   }
-    
+	/*
+	 * @PostMapping("/createPrescriptionReport") public void
+	 * createPrescriptionReports( ){
+	 * 
+	 * consultationCommandService.createPrescriptionReport(); }
+	 * 
+	 * 
+	 * @PostMapping("/createPrescriptionReportAndSave") public void
+	 * createPrescriptionReportAndSave( ){
+	 * 
+	 * consultationCommandService.createPrescriptionReportAndSave(); }
+	 */
    @PostMapping("/sign")
 	public String sign(@RequestBody SigningCredentials signingCredentials) {
 		
@@ -116,12 +115,11 @@ public class ConsultationCommandResource {
 		return "+++++++successfully signed+++++++";
    }
    
-   @PostMapping("/upload")
-   public String upload(MultipartFile file){
-   	
-   	consultationCommandService.upload(file);
-   	return "success";
-   }
+	/*
+	 * @PostMapping("/upload") public String upload(MultipartFile file){
+	 * 
+	 * consultationCommandService.upload(file); return "success"; }
+	 */
    
    @PostMapping("/createSite")
 	public String createSite(@RequestBody SiteBodyCreate siteBodyCreate) {
@@ -130,6 +128,9 @@ public class ConsultationCommandResource {
 		consultationCommandService.createSite(siteBodyCreate); 
 		return "succes";
 	}
-   
-   
+   @GetMapping("/dmsid/{id}")
+   public String getPatientDMSID(@PathVariable Long id) {
+	   consultationCommandService.getPatientDMSID(id);
+	   return "====success====";
+   }
 }

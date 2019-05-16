@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import com.bytatech.ayoos.client.activiti_rest_api.api.FormsApi;
+import com.bytatech.ayoos.client.activiti_rest_api.api.HistoryApi;
 import com.bytatech.ayoos.client.activiti_rest_api.api.ProcessInstancesApi;
 import com.bytatech.ayoos.client.activiti_rest_api.api.TasksApi;
 import com.bytatech.ayoos.client.activiti_rest_api.model.DataResponse;
@@ -38,6 +39,7 @@ import com.bytatech.ayoos.client.activiti_rest_api.model.ProcessInstanceResponse
 import com.bytatech.ayoos.client.activiti_rest_api.model.RestFormProperty;
 import com.bytatech.ayoos.client.activiti_rest_api.model.RestVariable;
 import com.bytatech.ayoos.client.activiti_rest_api.model.SubmitFormRequest;
+import com.bytatech.ayoos.client.activiti_rest_api.model.TaskActionRequest;
 import com.bytatech.ayoos.client.activiti_rest_api.model.consultation.ConsultationDetails;
 import com.bytatech.ayoos.client.activiti_rest_api.model.consultation.ConsultationRequest;
 import com.bytatech.ayoos.client.activiti_rest_api.model.consultation.DefaultInfoRequest;
@@ -53,6 +55,8 @@ import com.bytatech.ayoos.client.alfresco_rest_api.model.SiteBodyCreate;
 import com.bytatech.ayoos.client.digitalsigning.api.DigitalSigningApi;
 import com.bytatech.ayoos.client.digitalsigning.api.DigitalSigningUploadApi;
 import com.bytatech.ayoos.client.digitalsigning.model.SigningCredentials;
+import com.bytatech.ayoos.client.patient_service.api.PatientResourceApi;
+import com.bytatech.ayoos.client.patient_service.model.PatientDTO;
 import com.bytatech.ayoos.domain.Prescription;
 import com.bytatech.ayoos.repository.ConsultationRepository;
 import com.bytatech.ayoos.repository.PrescriptionRepository;
@@ -115,6 +119,12 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
 	SitesApi sitesApi;
     
     @Autowired
+    HistoryApi historyApi;
+    
+    @Autowired
+    PatientResourceApi patientResourceApi;
+    
+    @Autowired
     PrescriptionRepository prescriptionRepo;
     
     private static List<PrescriptionRequest> prescriptionRequestList = new ArrayList<PrescriptionRequest>();
@@ -133,7 +143,8 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
 		ProcessInstanceCreateRequest processInstanceCreateRequest=new ProcessInstanceCreateRequest();
    		List<RestVariable> variables=new ArrayList<RestVariable>();
    		//processInstanceCreateRequest.setProcessDefinitionId("consultation:1:43");
-   		processInstanceCreateRequest.setProcessDefinitionId("consultation:2:923");
+   		//processInstanceCreateRequest.setProcessDefinitionId("consultation:2:923");
+   		processInstanceCreateRequest.setProcessDefinitionId("consultation:4:10218");
    		RestVariable restVariable=new RestVariable();
    		
    		restVariable.setName("token");
@@ -282,58 +293,123 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
 	@Override
 	public void collectConsultationInfo(String taskId, ConsultationRequest consultationRequest) {
 		log .info("into ====================collectConsultationInfo()");
-   		List<RestFormProperty>formProperties=new ArrayList<RestFormProperty>();
-   		SubmitFormRequest submitFormRequest = new SubmitFormRequest();
-   		submitFormRequest.setAction("completed");
-   		submitFormRequest.setTaskId(taskId);
+		/*
+		 * List<RestFormProperty>formProperties=new ArrayList<RestFormProperty>();
+		 * SubmitFormRequest submitFormRequest = new SubmitFormRequest();
+		 * submitFormRequest.setAction("completed");
+		 * submitFormRequest.setTaskId(taskId);
+		 * 
+		 * RestFormProperty symptomFormProperty = new RestFormProperty();
+		 * symptomFormProperty.setId("symptom"); symptomFormProperty.setName("symptom");
+		 * symptomFormProperty.setType("String"); symptomFormProperty.setReadable(true);
+		 * symptomFormProperty.setValue(consultationRequest.getSymptom());
+		 * formProperties.add(symptomFormProperty);
+		 * 
+		 * RestFormProperty dateFormProperty = new RestFormProperty();
+		 * dateFormProperty.setId("date"); dateFormProperty.setName("date");
+		 * dateFormProperty.setType("Date"); dateFormProperty.setReadable(true);
+		 * dateFormProperty.setWritable(true); SimpleDateFormat formatter=new
+		 * SimpleDateFormat("MM-dd-yyyy"); String
+		 * date=formatter.format(consultationRequest.getDate());
+		 * dateFormProperty.setValue(date); formProperties.add(dateFormProperty);
+		 * 
+		 * RestFormProperty evaluationFormProperty = new RestFormProperty();
+		 * evaluationFormProperty.setId("evaluation");
+		 * evaluationFormProperty.setName("evaluation");
+		 * evaluationFormProperty.setType("String");
+		 * evaluationFormProperty.setReadable(true);
+		 * evaluationFormProperty.setValue(consultationRequest.getEvaluation());
+		 * formProperties.add(evaluationFormProperty);
+		 * 
+		 * RestFormProperty labResultDMSURLFormProperty = new RestFormProperty();
+		 * labResultDMSURLFormProperty.setId("labResultDMSURL");
+		 * labResultDMSURLFormProperty.setName("labResultDMSURL");
+		 * labResultDMSURLFormProperty.setType("String");
+		 * labResultDMSURLFormProperty.setReadable(true);
+		 * labResultDMSURLFormProperty.setValue(consultationRequest.getLabResultDMSURL()
+		 * ); formProperties.add(labResultDMSURLFormProperty);
+		 * 
+		 * 
+		 * RestFormProperty examinationRequiredFormProperty = new RestFormProperty();
+		 * examinationRequiredFormProperty.setId("examinationRequired");
+		 * examinationRequiredFormProperty.setName("examinationRequired");
+		 * examinationRequiredFormProperty.setType("String");
+		 * examinationRequiredFormProperty.setReadable(true);
+		 * examinationRequiredFormProperty.setValue(consultationRequest.
+		 * getExaminationRequired());
+		 * formProperties.add(examinationRequiredFormProperty);
+		 * 
+		 * submitFormRequest.setProperties(formProperties);
+		 * formsApi.submitForm(submitFormRequest);
+		 */
    		
-   		RestFormProperty symptomFormProperty = new RestFormProperty();
-   		symptomFormProperty.setId("symptom");
-   		symptomFormProperty.setName("symptom");
-   		symptomFormProperty.setType("String");
-   		symptomFormProperty.setReadable(true);
-   		symptomFormProperty.setValue(consultationRequest.getSymptom());
-   		formProperties.add(symptomFormProperty);
-   		
-   		RestFormProperty dateFormProperty = new RestFormProperty();
-   		dateFormProperty.setId("date");
-   		dateFormProperty.setName("date");
-   		dateFormProperty.setType("Date");
-   		dateFormProperty.setReadable(true);
-   		dateFormProperty.setWritable(true);
-   		SimpleDateFormat formatter=new SimpleDateFormat("MM-dd-yyyy");
-   		String date=formatter.format(consultationRequest.getDate());
-   		dateFormProperty.setValue(date);
-   		formProperties.add(dateFormProperty);
-   		
-   		RestFormProperty evaluationFormProperty = new RestFormProperty();
-   		evaluationFormProperty.setId("evaluation");
-   		evaluationFormProperty.setName("evaluation");
-   		evaluationFormProperty.setType("String");
-   		evaluationFormProperty.setReadable(true);
-   		evaluationFormProperty.setValue(consultationRequest.getEvaluation());
-   		formProperties.add(evaluationFormProperty);
-   		
-   		RestFormProperty labResultDMSURLFormProperty = new RestFormProperty();
-   		labResultDMSURLFormProperty.setId("labResultDMSURL");
-   		labResultDMSURLFormProperty.setName("labResultDMSURL");
-   		labResultDMSURLFormProperty.setType("String");
-   		labResultDMSURLFormProperty.setReadable(true);
-   		labResultDMSURLFormProperty.setValue(consultationRequest.getLabResultDMSURL());
-   		formProperties.add(labResultDMSURLFormProperty);
-   		
-   		
-   		RestFormProperty examinationRequiredFormProperty = new RestFormProperty();
-   		examinationRequiredFormProperty.setId("examinationRequired");
-   		examinationRequiredFormProperty.setName("examinationRequired");
-   		examinationRequiredFormProperty.setType("String");
-   		examinationRequiredFormProperty.setReadable(true);
-   		examinationRequiredFormProperty.setValue(consultationRequest.getExaminationRequired());
-   		formProperties.add(examinationRequiredFormProperty);
-   		
-   		submitFormRequest.setProperties(formProperties);
-   		formsApi.submitForm(submitFormRequest);
-   		
+		
+		//String processInstanceId=tasksApi.getTask(taskId).getBody().getProcessInstanceId();
+
+		TaskActionRequest taskActionRequest = new TaskActionRequest();
+		taskActionRequest.setAction("complete");
+		List<RestVariable> variables = new ArrayList<RestVariable>();
+
+		RestVariable consultationRequestVariable = new RestVariable();
+		consultationRequestVariable.setName("consultationRequest");
+		consultationRequestVariable.setScope("global");
+		consultationRequestVariable.setValue(consultationRequest);
+		variables.add(consultationRequestVariable);
+		
+		/*
+		 * RestVariable evaluationVariable = new RestVariable();
+		 * evaluationVariable.setName("evaluation");
+		 * evaluationVariable.setScope("global"); evaluationVariable.setValue("String");
+		 * variables.add(evaluationVariable);
+		 * 
+		 * RestVariable examinationRequiredVariable = new RestVariable();
+		 * examinationRequiredVariable.setName("examinationRequired");
+		 * examinationRequiredVariable.setScope("global");
+		 * examinationRequiredVariable.setValue("String");
+		 * variables.add(examinationRequiredVariable);
+		 * 
+		 * RestVariable dateVariable = new RestVariable(); dateVariable.setName("date");
+		 * dateVariable.setScope("global"); dateVariable.setValue("Date");
+		 * variables.add(dateVariable);
+		 */		
+		taskActionRequest.setVariables(variables);
+		log.info("consultationRequestVariable " + consultationRequestVariable);
+//		log.info("examinationRequiredVariable " + examinationRequiredVariable);
+		
+		
+		
+		/*
+		 * List<RestFormProperty>formProperties=new ArrayList<RestFormProperty>();
+		 * SubmitFormRequest submitFormRequest = new SubmitFormRequest();
+		 * submitFormRequest.setAction("completed");
+		 * submitFormRequest.setTaskId(taskId);
+		 * 
+		 * RestFormProperty examinationRequiredFormProperty = new RestFormProperty();
+		 * examinationRequiredFormProperty.setId("examinationRequired");
+		 * examinationRequiredFormProperty.setName("examinationRequired");
+		 * examinationRequiredFormProperty.setType("String");
+		 * examinationRequiredFormProperty.setReadable(true);
+		 * examinationRequiredFormProperty.setValue(consultationRequest.
+		 * getExaminationRequired());
+		 * formProperties.add(examinationRequiredFormProperty);
+		 */
+		
+		
+		
+		//submitFormRequest.setProperties(formProperties);
+		//formsApi.submitForm(submitFormRequest);
+		tasksApi.executeTaskAction(taskId, taskActionRequest);
+		 
+		/*
+		 * ResponseEntity<DataResponse> taskReponse =
+		 * historyApi.listHistoricTaskInstances(taskId, null, null, null, null, null,
+		 * null, null, null, null, null, "Collect Informations", null, null, null, null,
+		 * null, null, null, null, null, null, null, null, null, null, null, null, null,
+		 * null, null, null, null, null, null, null, null, null, null, null, null,
+		 * null); List<LinkedHashMap<String, String>> map = (List<LinkedHashMap<String,
+		 * String>>) taskReponse.getBody().getData();
+		 */
+		
 		
 	}
 
@@ -393,57 +469,76 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
 	}
 
 	@Override
-	public void collectPrescriptionInfo(String taskId, PrescriptionRequest prescriptionRequest) {
+	public void collectPrescriptionInfo(String taskId, List<PrescriptionRequest> prescriptionRequest) {
 		log .info("into ====================collectPrescriptionInfo()");
-   		List<RestFormProperty>formProperties=new ArrayList<RestFormProperty>();
-   		SubmitFormRequest submitFormRequest = new SubmitFormRequest();
-   		submitFormRequest.setAction("completed");
-   		submitFormRequest.setTaskId(taskId);
-		
-   		RestFormProperty drugFormProperty = new RestFormProperty();
-   		drugFormProperty.setId("drug");
-   		drugFormProperty.setName("drug");
-   		drugFormProperty.setType("String");
-   		drugFormProperty.setReadable(true);
-   		drugFormProperty.setWritable(true);
-   		drugFormProperty.setValue(prescriptionRequest.getDrug());
-   		formProperties.add(drugFormProperty);
-   		System.out.println("================================"+drugFormProperty.getValue()+"====================================");
+		/*
+		 * List<RestFormProperty>formProperties=new ArrayList<RestFormProperty>();
+		 * SubmitFormRequest submitFormRequest = new SubmitFormRequest();
+		 * submitFormRequest.setAction("completed");
+		 * submitFormRequest.setTaskId(taskId);
+		 * 
+		 * RestFormProperty drugFormProperty = new RestFormProperty();
+		 * drugFormProperty.setId("drug"); drugFormProperty.setName("drug");
+		 * drugFormProperty.setType("String"); drugFormProperty.setReadable(true);
+		 * drugFormProperty.setWritable(true);
+		 * drugFormProperty.setValue(prescriptionRequest.getDrug());
+		 * formProperties.add(drugFormProperty);
+		 * System.out.println("================================"+drugFormProperty.
+		 * getValue()+"====================================");
+		 * 
+		 * 
+		 * RestFormProperty doseFormProperty = new RestFormProperty();
+		 * doseFormProperty.setId("dose"); doseFormProperty.setName("dose");
+		 * doseFormProperty.setType("String"); doseFormProperty.setReadable(true);
+		 * drugFormProperty.setWritable(true);
+		 * doseFormProperty.setValue(prescriptionRequest.getDose());
+		 * formProperties.add(doseFormProperty);
+		 * 
+		 * RestFormProperty frequencyFormProperty = new RestFormProperty();
+		 * frequencyFormProperty.setId("frequency");
+		 * frequencyFormProperty.setName("frequency");
+		 * frequencyFormProperty.setType("String");
+		 * frequencyFormProperty.setReadable(true); drugFormProperty.setWritable(true);
+		 * frequencyFormProperty.setValue(prescriptionRequest.getFrequency());
+		 * formProperties.add(frequencyFormProperty);
+		 * 
+		 * RestFormProperty periodFormProperty = new RestFormProperty();
+		 * periodFormProperty.setId("period"); periodFormProperty.setName("period");
+		 * periodFormProperty.setType("String"); periodFormProperty.setReadable(true);
+		 * drugFormProperty.setWritable(true);
+		 * periodFormProperty.setValue(prescriptionRequest.getPeriod());
+		 * formProperties.add(periodFormProperty);
+		 */
    		
-   	
-   		RestFormProperty doseFormProperty = new RestFormProperty();
-   		doseFormProperty.setId("dose");
-   		doseFormProperty.setName("dose");
-   		doseFormProperty.setType("String");
-   		doseFormProperty.setReadable(true);
-   		drugFormProperty.setWritable(true);
-   		doseFormProperty.setValue(prescriptionRequest.getDose());
-   		formProperties.add(doseFormProperty);
-   		
-   		RestFormProperty frequencyFormProperty = new RestFormProperty();
-   		frequencyFormProperty.setId("frequency");
-   		frequencyFormProperty.setName("frequency");
-   		frequencyFormProperty.setType("String");
-   		frequencyFormProperty.setReadable(true);
-   		drugFormProperty.setWritable(true);
-   		frequencyFormProperty.setValue(prescriptionRequest.getFrequency());
-   		formProperties.add(frequencyFormProperty);
-   		
-   		RestFormProperty periodFormProperty = new RestFormProperty();
-   		periodFormProperty.setId("period");
-   		periodFormProperty.setName("period");
-   		periodFormProperty.setType("String");
-   		periodFormProperty.setReadable(true);
-   		drugFormProperty.setWritable(true);
-   		periodFormProperty.setValue(prescriptionRequest.getPeriod());
-   		formProperties.add(periodFormProperty);
-   		
-   		System.out.println("/////////////////////////"+periodFormProperty.getValue()+"////////////////////////////////////////");
+   		//System.out.println("/////////////////////////"+periodFormProperty.getValue()+"////////////////////////////////////////");
    		//System.out.println("***********************"+prescriptionRequest.toString()+"*****************");
-   		
-   		List<PrescriptionRequest>request=new ArrayList<PrescriptionRequest>();
-   		request.add(prescriptionRequest);
-   		setPrescriptionRequestList(request);
+		
+		TaskActionRequest taskActionRequest = new TaskActionRequest();
+		taskActionRequest.setAction("complete");
+		List<RestVariable> variables = new ArrayList<RestVariable>();
+
+		RestVariable prescriptionRequestVariable = new RestVariable();
+		prescriptionRequestVariable.setName("PrescriptionRequest");
+		prescriptionRequestVariable.setScope("global");
+		prescriptionRequestVariable.setValue(prescriptionRequest);
+		variables.add(prescriptionRequestVariable);
+		
+		System.out.println("////////////////////////////////////////////////"+variables.size());
+		System.out.println("///////////////////////////////////////////////"+variables.get(0).getValue());
+		
+		
+		  List<PrescriptionRequest>request=new ArrayList<PrescriptionRequest>();
+		//  request.add(prescriptionRequest); 
+		  
+		  request=(List<PrescriptionRequest>) variables.get(0).getValue();
+		  setPrescriptionRequestList(request);
+		  try {
+			getPrescriptionAndUploadToAlfresco() ;
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		  
 		
 		/*
 		 * try { createPrescriptionReport(prescriptionRequest); } catch (JRException e)
@@ -455,46 +550,91 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
 		 
    		//saveToRepo(formProperties);
    		//prescriptionRepo.save(prescriptionRequest);
-   		submitFormRequest.setProperties(formProperties);
-   		formsApi.submitForm(submitFormRequest);
-		
+   		//submitFormRequest.setProperties(formProperties);
+   		//formsApi.submitForm(submitFormRequest);
+   		
+   		tasksApi.executeTaskAction(taskId, taskActionRequest);
 	}
 
 
-	@Override
-	public void createPrescriptionReport() {
-		// TODO Auto-generated method stub
+	
+	  /**
+	    * Get Report.
+	    *    save to alfresco
+	    * @return resource
+	    * @throws JRException
+	    */
+	
+	 public Resource getPrescriptionAndUploadToAlfresco() throws JRException {
+		   
+	      log.debug("Request to pdf of all products");
+
+	      JasperReport jr = JasperCompileManager.compileReport("prescription_2.jrxml");
+
+	      JRBeanCollectionDataSource datasource = new JRBeanCollectionDataSource(ConsultationCommandServiceImpl.getPrescriptionRequestList());
+	      
+	     
+	      //Preparing parameters
+	     Map<String, Object> parameters = new HashMap<String, Object>();
+	     parameters.put("prescription", jr);
+
+	     
+	     JasperPrint jp = JasperFillManager.fillReport(jr, parameters, datasource);
+
+ Resource resource=new ByteArrayResource(JasperExportManager.exportReportToPdf(jp));
+	     
+ 			upload(resource);
+	     return resource;
+	    
+       }    
+	
+	
+	
+	
+	/*
+	 * @Override public void createPrescriptionReport() { // TODO Auto-generated
+	 * method stub
+	 * 
+	 * }
+	 * 
+	 * 
+	 * 
+	 * @Override public void createPrescriptionReportAndSave() { // TODO
+	 * Auto-generated method stub //upload to alfesco after creating report }
+	 */
+	
+	public void getPatientDMSID(Long id) {
 		
-	}
-
-
-
-	@Override
-	public void createPrescriptionReportAndSave() {
-		// TODO Auto-generated method stub
-		//upload to alfesco after creating report
+		String siteName = patientResourceApi.getPatientUsingGET(id).getBody().getDmsId();
+		
+		System.out.println(siteName);
 	}
 	
+	
 	@Override
-	public String upload(@RequestParam MultipartFile file) {
+	public String upload(Resource resource) {
 		System.out.println("+++++++++++++success+++++++++++++");
 
 		
 
-		Resource resource = null;
+		
+		/*
+		 * try { resource = new ByteArrayResource(file.getBytes()); } catch (IOException
+		 * e) { e.printStackTrace(); }
+		 */
 
-		try {
-			resource = new ByteArrayResource(file.getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+		/*
+		 * PatientDTO patient = null;; String siteName= patient.getDmsId();
+		 * System.out.println(
+		 * "----------------------------------------------------------"+siteName);
+		 */
 		String name = "document"+".pdf";
 		NodeBodyCreate nodeBodyCreate = new NodeBodyCreate();
 		nodeBodyCreate.setName(name);
 		nodeBodyCreate.setNodeType("cm:content");
 		//http://127.0.0.1:8013/share/page/site/dsite/documentlibrary
 		nodeBodyCreate.setRelativePath("Sites/pat/documentlibrary");
+		//nodeBodyCreate.setRelativePath("Sites/"+siteName+"/documentlibrary");
 		//nodeBodyCreate.setRelativePath("Signed Documents");
 		NodeEntry nodeEntry = nodesApi.createNode("-my-", nodeBodyCreate, true, null, null).getBody();
 		nodesApi.updateNodeContent(nodeEntry.getEntry().getId(), resource, true, null, null, null, null);

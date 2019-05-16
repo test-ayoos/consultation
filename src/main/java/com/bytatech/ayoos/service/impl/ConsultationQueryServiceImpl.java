@@ -1,5 +1,7 @@
 package com.bytatech.ayoos.service.impl;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -11,13 +13,21 @@ import java.util.Map;
 import javax.sql.DataSource;
 import javax.validation.Valid;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
 
 import com.bytatech.ayoos.client.activiti_rest_api.api.FormsApi;
 import com.bytatech.ayoos.client.activiti_rest_api.api.HistoryApi;
@@ -34,6 +44,7 @@ import com.bytatech.ayoos.repository.ConsultationRepository;
 import com.bytatech.ayoos.repository.search.ConsultationSearchRepository;
 import com.bytatech.ayoos.service.ConsultationQueryService;
 import com.bytatech.ayoos.service.mapper.ConsultationMapper;
+import com.bytatech.ayoos.web.rest.ConsultationCommandResource;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -42,6 +53,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+
 /**
  * Service Implementation for managing MedicalSummary.
  */
@@ -59,6 +71,8 @@ public class ConsultationQueryServiceImpl implements ConsultationQueryService{
 	    
 	    @Autowired
 	    private HistoryApi historyApi;
+	    @Autowired
+	    private ConsultationCommandResource commandResource; 
 	    
 	    private final ConsultationRepository consultationRepository;
 
@@ -174,47 +188,46 @@ public class ConsultationQueryServiceImpl implements ConsultationQueryService{
 	 * 
 	 * return prescriptionRequest; }
 	 */
-	
-	@Override 
-	public PrescriptionRequest getPrescriptionDetails(String processInstanceId) {
-		
-		PrescriptionRequest prescriptionRequest = new PrescriptionRequest();
-		
-		List<LinkedHashMap<String, String>> taskResponsePrescription = (List<LinkedHashMap<String, String>>) getHistoricTaskusingProcessInstanceIdAndName(
-				processInstanceId, "Prescription").getBody().getData();
-		
-		Long taskId=taskResponsePrescription.stream().mapToLong(obj -> Long.parseLong(obj.get("id"))).max().getAsLong();
-		
-		ResponseEntity<DataResponse> prescriptionDetails = historyApi.getHistoricDetailInfo(null, processInstanceId, null, null,
-				taskId.toString(), true, false);
-		
-		List<LinkedHashMap<String, String>> prescriptionFormProperties = (List<LinkedHashMap<String, String>>) prescriptionDetails
-				.getBody().getData();
-		
-		System.out.println("******************************"+taskResponsePrescription.size());
-		System.out.println("******************************"+taskId);
-		
-		for(LinkedHashMap<String, String> prescriptionMap : prescriptionFormProperties) {
-			String drug = null;
-			String dose = null;
-			String frequency = null;
-			String period = null;
-			
-			String propertyId = prescriptionMap.get("propertyId");
-			//System.out.println("***********"+propertyId);
-			if (propertyId.equals("drug")) {
-				drug = prescriptionMap.get("propertyValue");
-				System.out.println("***********"+drug);
-				prescriptionRequest.setDrug(drug);
-			}
-			//System.out.println("***---------------*************--------"+drug);
-		}
-		
-		return prescriptionRequest;
-	
-		
-	}
-	
+	/*
+	 * @Override public PrescriptionRequest getPrescriptionDetails(String
+	 * processInstanceId) {
+	 * 
+	 * PrescriptionRequest prescriptionRequest = new PrescriptionRequest();
+	 * 
+	 * List<LinkedHashMap<String, String>> taskResponsePrescription =
+	 * (List<LinkedHashMap<String, String>>)
+	 * getHistoricTaskusingProcessInstanceIdAndName( processInstanceId,
+	 * "Prescription").getBody().getData();
+	 * 
+	 * Long taskId=taskResponsePrescription.stream().mapToLong(obj ->
+	 * Long.parseLong(obj.get("id"))).max().getAsLong();
+	 * 
+	 * ResponseEntity<DataResponse> prescriptionDetails =
+	 * historyApi.getHistoricDetailInfo(null, processInstanceId, null, null,
+	 * taskId.toString(), true, false);
+	 * 
+	 * List<LinkedHashMap<String, String>> prescriptionFormProperties =
+	 * (List<LinkedHashMap<String, String>>) prescriptionDetails
+	 * .getBody().getData();
+	 * 
+	 * System.out.println("******************************"+taskResponsePrescription.
+	 * size()); System.out.println("******************************"+taskId);
+	 * 
+	 * for(LinkedHashMap<String, String> prescriptionMap :
+	 * prescriptionFormProperties) { String drug = null; String dose = null; String
+	 * frequency = null; String period = null;
+	 * 
+	 * String propertyId = prescriptionMap.get("propertyId");
+	 * //System.out.println("***********"+propertyId); if
+	 * (propertyId.equals("drug")) { drug = prescriptionMap.get("propertyValue");
+	 * System.out.println("***********"+drug); prescriptionRequest.setDrug(drug); }
+	 * //System.out.println("***---------------*************--------"+drug); }
+	 * 
+	 * return prescriptionRequest;
+	 * 
+	 * 
+	 * }
+	 */
 	public ResponseEntity<DataResponse> getHistoricTaskusingProcessInstanceIdAndName(String processInstanceId,
 			String name) {
 		return historyApi.listHistoricTaskInstances(null, processInstanceId, null, null, null, null, null, null, null,
@@ -224,33 +237,65 @@ public class ConsultationQueryServiceImpl implements ConsultationQueryService{
 	}
 	
 
-	   /**
-	    * Get produtsReport.
-	    *    
-	    * @return the byte[]
-	    * @throws JRException
-	    */
-	   @Override  
-	   public byte[] getPrescriptionAsPdf() throws JRException {
+
 	   
-	      log.debug("Request to pdf of all products");
+	   
+	   //download as pdf
+	@Override
+	public byte[] getPrescriptionAsPdfDowload() throws JRException {
+	
+		   
+		      log.debug("Request to pdf of all products");
 
-	      JasperReport jr = JasperCompileManager.compileReport("prescription_2.jrxml");
+		      JasperReport jr = JasperCompileManager.compileReport("prescription_2.jrxml");
 
-	      JRBeanCollectionDataSource datasource = new JRBeanCollectionDataSource(ConsultationCommandServiceImpl.getPrescriptionRequestList());
-	      
-	     
-	      //Preparing parameters
-	     Map<String, Object> parameters = new HashMap<String, Object>();
-	     parameters.put("prescription", jr);
+		      JRBeanCollectionDataSource datasource = new JRBeanCollectionDataSource(ConsultationCommandServiceImpl.getPrescriptionRequestList());
+		      
+		     
+		      //Preparing parameters
+		     Map<String, Object> parameters = new HashMap<String, Object>();
+		     parameters.put("prescription", jr);
 
-	     
-	     JasperPrint jp = JasperFillManager.fillReport(jr, parameters, datasource);
+		     
+		     JasperPrint jp = JasperFillManager.fillReport(jr, parameters, datasource);
 
-	     //JasperExportManager.exportReportToPdfFile(jp, "UserNeeds.pdf");
+		     //JasperExportManager.exportReportToPdfFile(jp, "UserNeeds.pdf");
+		     //byte[] file;
+		     
+		   
+			/*
+			 * BASE64DecodedMultipartFile file = new
+			 * BASE64DecodedMultipartFile(JasperExportManager.exportReportToPdf(jp));
+			 * 
+			 * File f =new File("/home/karthi/Desktop/Doc6.pdf");
+			 * 
+			 * System.out.println("*******************************************************"+
+			 * file.getSize()); try {
+			 * 
+			 * file.transferTo(f); System.out.println(f.length()); } catch
+			 * (IllegalStateException e) { // TODO Auto-generated catch block
+			 * e.printStackTrace(); } catch (IOException e) { // TODO Auto-generated catch
+			 * block e.printStackTrace(); }
+			 */ //file= JasperExportManager.exportReportToPdf(jp);
+		     
+			
+			/*
+			 * DiskFileItem fileItem = new DiskFileItem("f", "application/pdf", true,
+			 * f.getName(), (int) f.length() , f.getParentFile());
+			 * System.out.println("///////////////////////////////////////////////"+fileItem
+			 * .getSize()); try { fileItem.getOutputStream(); } catch (IOException e) {
+			 * e.printStackTrace(); } MultipartFile multipartFile = new
+			 * CommonsMultipartFile(fileItem);
+			 * System.out.println("-------------------------------------------------------"+
+			 * multipartFile.getSize());
+			 *///commandResource.upload(multipartFile);
+		     
 
-	    return JasperExportManager.exportReportToPdf(jp);
-       }    
+		    return JasperExportManager.exportReportToPdf(jp);
+	         
+	}
+
+	
 
 
 }
