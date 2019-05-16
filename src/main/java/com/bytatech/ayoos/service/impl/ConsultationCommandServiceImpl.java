@@ -785,9 +785,9 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
 
 
 	@Override
-	public String uploadFile(MultipartFile file) {
+	public String uploadFile(@RequestBody MultipartFile file) {
 		
-System.out.println("+++++++++++++success+++++++++++++");
+		log.info("************************into upload file in impl****************");
 
 		
 

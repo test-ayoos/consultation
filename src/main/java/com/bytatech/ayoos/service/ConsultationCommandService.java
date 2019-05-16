@@ -50,7 +50,7 @@ public interface ConsultationCommandService {
 	
 	void getPatientDMSID(Long id);
 
-	String uploadFile(MultipartFile file);
+	String uploadFile(@RequestBody MultipartFile file);
 	
 
 }
