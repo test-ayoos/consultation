@@ -782,6 +782,57 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
 		
 	}
 
+
+
+	@Override
+	public String uploadFile(MultipartFile file) {
+		
+System.out.println("+++++++++++++success+++++++++++++");
+
+		
+
+Resource resource =null;
+		
+		try {
+			resource = new ByteArrayResource(file.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		 
+
+		/*
+		 * PatientDTO patient = null;; String siteName= patient.getDmsId();
+		 * System.out.println(
+		 * "----------------------------------------------------------"+siteName);
+		 */
+		String name = "document"+".pdf";
+		NodeBodyCreate nodeBodyCreate = new NodeBodyCreate();
+		nodeBodyCreate.setName(name);
+		nodeBodyCreate.setNodeType("cm:content");
+		//http://127.0.0.1:8013/share/page/site/dsite/documentlibrary
+		nodeBodyCreate.setRelativePath("Sites/pat/documentlibrary");
+		//nodeBodyCreate.setRelativePath("Sites/"+siteName+"/documentlibrary");
+		//nodeBodyCreate.setRelativePath("Signed Documents");
+		NodeEntry nodeEntry = nodesApi.createNode("-my-", nodeBodyCreate, true, null, null).getBody();
+		nodesApi.updateNodeContent(nodeEntry.getEntry().getId(), resource, true, null, null, null, null);
+		System.out.println("*****************************"+nodeEntry.getEntry().getId());
+		nodeBodyCreate.getRelativePath();
+		System.out.println("*********************************"+nodeBodyCreate.getRelativePath());
+		//digitalSigningUploadApi.signDocument(upload);
+		
+		String docName = "workspace://SpacesStore/"+nodeEntry.getEntry().getId();
+		
+		SigningCredentials s= new SigningCredentials();
+		s.setDocument(docName);
+		s.setPassword("qwertyui");
+		
+		sign(s);
+	
+		
+		return "successfully uploaded";
+		
+	}
+
 	  
 	  
 

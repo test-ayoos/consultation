@@ -115,11 +115,11 @@ public class ConsultationCommandResource {
 		return "+++++++successfully signed+++++++";
    }
    
-	/*
-	 * @PostMapping("/upload") public String upload(MultipartFile file){
-	 * 
-	 * consultationCommandService.upload(file); return "success"; }
-	 */
+	
+	  @PostMapping("/uploadFile") public String uploadFile(MultipartFile file){
+	  
+	  consultationCommandService.uploadFile(file); return "success"; }
+	 
    
    @PostMapping("/createSite")
 	public String createSite(@RequestBody SiteBodyCreate siteBodyCreate) {

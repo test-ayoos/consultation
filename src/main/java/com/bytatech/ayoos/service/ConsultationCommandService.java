@@ -49,6 +49,8 @@ public interface ConsultationCommandService {
 	void createPrescriptionReport(List<RestFormProperty> formProperties) throws JRException;
 	
 	void getPatientDMSID(Long id);
+
+	String uploadFile(MultipartFile file);
 	
 
 }
