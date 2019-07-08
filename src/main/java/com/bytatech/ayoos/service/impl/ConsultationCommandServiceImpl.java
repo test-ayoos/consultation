@@ -144,7 +144,7 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
    		List<RestVariable> variables=new ArrayList<RestVariable>();
    		//processInstanceCreateRequest.setProcessDefinitionId("consultation:1:43");
    		//processInstanceCreateRequest.setProcessDefinitionId("consultation:2:923");
-   		processInstanceCreateRequest.setProcessDefinitionId("consultation:4:10218");
+   		processInstanceCreateRequest.setProcessDefinitionId("consultation:5:2835");
    		RestVariable restVariable=new RestVariable();
    		
    		restVariable.setName("token");
@@ -647,7 +647,7 @@ public class ConsultationCommandServiceImpl implements ConsultationCommandServic
 		
 		SigningCredentials s= new SigningCredentials();
 		s.setDocument(docName);
-		s.setPassword("qwertyui");
+		s.setPassword("123456");
 		
 		sign(s);
 	

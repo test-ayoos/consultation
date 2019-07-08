@@ -36,7 +36,7 @@ import com.bytatech.ayoos.client.digitalsigning.ClientConfiguration;
  */
 
 
-@FeignClient(name="${alfrescoRestApi.name:alfrescoRestApi}", url="${alfrescoRestApi.url:http://35.225.189.219:8075/alfresco/service}", configuration = ClientConfiguration.class)
+@FeignClient(name="${alfrescoRestApi.name:alfrescoRestApi}", url="${alfrescoRestApi.url:http://34.68.17.132:8013/alfresco/service}", configuration = ClientConfiguration.class)
 
 
 public interface DigitalSigningApiClient extends DigitalSigningApi{

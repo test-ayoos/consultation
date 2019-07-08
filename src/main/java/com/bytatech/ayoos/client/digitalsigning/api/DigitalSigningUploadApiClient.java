@@ -33,7 +33,7 @@ import com.bytatech.ayoos.client.digitalsigning.ClientConfiguration;
  */
 
 
-@FeignClient(name="${alfrescojhipster.name:alfrescojhipster}", url="${alfrescojhipster.url:http://35.225.189.219:8075/alfresco/service}", configuration = ClientConfiguration.class)
+@FeignClient(name="${alfrescojhipster.name:alfrescojhipster}", url="${alfrescojhipster.url:http://34.68.17.132:8013/alfresco/service}", configuration = ClientConfiguration.class)
 public interface DigitalSigningUploadApiClient extends DigitalSigningUploadApi{
 
 }
